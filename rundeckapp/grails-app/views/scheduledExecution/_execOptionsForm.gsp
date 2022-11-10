@@ -13,8 +13,6 @@
   - See the License for the specific language governing permissions and
   - limitations under the License.
   --}%
-<%@ page import="rundeck.User;" %>
-
 
 <g:uploadForm controller="scheduledExecution" method="post" useToken="true"
               params="[project: scheduledExecution.project]" role="form" >
@@ -296,9 +294,9 @@
                     <div class="">
                         <g:set var="filtvalue" value="${nodefilter}"/>
 
-                        <g:if test="${session.user && User.findByLogin(session.user)?.nodefilters}">
-                            <g:set var="filterset" value="${User.findByLogin(session.user)?.nodefilters.findAll { it.project == project }}"/>
-                        </g:if>
+                        <user:getNodeFilters user="${session.user}">
+                            <g:set var="filterset" value="${filters.findAll { it.project == project }}"/>
+                        </user:getNodeFilters>
 
                         <div id="nodefilterViewArea" data-ko-bind="nodeFilter" data-bind="visible: nodeFiltersVisible">
                         <div class="${emptyQuery ? 'active' : ''}" id="nodeFilterInline">
