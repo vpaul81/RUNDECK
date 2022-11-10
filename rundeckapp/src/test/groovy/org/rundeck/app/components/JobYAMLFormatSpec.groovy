@@ -298,6 +298,60 @@ class JobYAMLFormatSpec extends Specification {
     }
 
     @Unroll
+    def "should return a notification list of map and single map with email and webhook notifs"() {
+        given:
+        def input = "" +
+                "- defaultTab: nodes\n" +
+                "  description: \"\"\n" +
+                "  executionEnabled: true\n" +
+                "  loglevel: INFO\n" +
+                "  name: a\n" +
+                "  nodeFilterEditable: false\n" +
+                "  notification:\n" +
+                "    onsuccess:\n" +
+                "      - email:\n" +
+                "          attachLog: true\n" +
+                "          attachLogInFile: true\n" +
+                "          recipients: leojesus.juarez@gmail.com\n" +
+                "          subject: RD-SUCCESS\n" +
+                "      - email:\n" +
+                "          attachLog: true\n" +
+                "          attachLogInline: true\n" +
+                "          recipients: 2@gmail.com\n" +
+                "          subject: RD-SUCCESS\n" +
+                "      - format: xml\n" +
+                "        httpMethod: get\n" +
+                "        urls: http://localhost:4440/project\n" +
+                "      - format: json\n" +
+                "        httpMethod: post\n" +
+                "        urls: http://localhost:4440/project\n" +
+                "    onfailure:\n" +
+                "      format: json\n" +
+                "      httpMethod: post\n" +
+                "      urls: http://localhost:4440/project\n" +
+                "  notifyAvgDurationThreshold: null\n" +
+                "  plugins:\n" +
+                "    ExecutionLifecycle: null\n" +
+                "  scheduleEnabled: true\n" +
+                "  schedules: []\n" +
+                "  sequence:\n" +
+                "    commands:\n" +
+                "      - exec: asd\n" +
+                "    keepgoing: false\n" +
+                "    strategy: node-first\n"
+        def sut = new JobYAMLFormat()
+        when:
+        def result = sut.decode(new StringReader(input))
+        then:
+        result[0].notification['onsuccess'].size() == 4
+        result[0].notification['onsuccess'].findAll{ it['email'] != null }.size() == 2
+        result[0].notification['onsuccess'].findAll{ it['urls'] != null }.size() == 2
+
+        result[0].notification['onfailure'].size() == 1
+        result[0].notification['onfailure'].findAll{ it['urls'] != null }.size() == 1
+    }
+
+    @Unroll
     def "should return an yaml str with list of objects in notification trigger"() {
         given:
         List<Map> input = [[
