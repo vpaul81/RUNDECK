@@ -70,6 +70,10 @@ class UserService {
         }
     }
 
+    String getUserEmail(String login) {
+        return User.findByLogin(login)?.email
+    }
+
     def registerLogin(String login, String sessionId){
         User user = User.findByLogin(login)
         if(!user){
