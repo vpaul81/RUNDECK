@@ -30,7 +30,6 @@ import org.rundeck.app.data.providers.v1.UserDataProvider
 import org.rundeck.core.auth.AuthConstants
 import org.rundeck.core.auth.app.RundeckAccess
 import org.rundeck.core.auth.web.RdAuthorizeApplicationType
-import org.rundeck.spi.data.DataManager
 import org.rundeck.util.Sizes
 import rundeck.Execution
 import rundeck.commandObjects.RdUserCommandObject
@@ -47,10 +46,7 @@ class UserController extends ControllerBase{
     GrailsApplication grailsApplication
     def configurationService
     TokenDataProvider tokenDataProvider
-
-    private UserDataProvider getUserDataProvider() {
-        rundeckDataManager.getProviderForType(UserDataProvider)
-    }
+    UserDataProvider userDataProvider
 
     static allowedMethods = [
             addFilterPref      : 'POST',
