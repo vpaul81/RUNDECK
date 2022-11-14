@@ -265,7 +265,7 @@ class JobYAMLFormatSpec extends Specification {
     }
 
     @Unroll
-    def "should return a notification map webhook url notifs"() {
+    def "should return a notification list with one webhook notification"() {
         given:
         def input = "" +
                 "- defaultTab: nodes\n" +
