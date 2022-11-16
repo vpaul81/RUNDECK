@@ -352,6 +352,79 @@ class JobYAMLFormatSpec extends Specification {
     }
 
     @Unroll
+    def "should return a notification list of map and single map with email, plugin and webhook notify"() {
+        given:
+        def input = "" +
+                "- defaultTab: nodes\n" +
+                "  description: ''\n" +
+                "  executionEnabled: true\n" +
+                "  loglevel: INFO\n" +
+                "  name: a\n" +
+                "  nodeFilterEditable: false\n" +
+                "  notification:\n" +
+                "    onstart:\n" +
+                "      email:\n" +
+                "        attachLog: 'true'\n" +
+                "        attachLogInFile: true\n" +
+                "        recipients: tom@example.com\n" +
+                "        subject: JOB-STARTED\n" +
+                "    onfailure:\n" +
+                "      email:\n" +
+                "        recipients: 'tom@example.com,shirley@example.com'\n" +
+                "    onsuccess:\n" +
+                "      format: json\n" +
+                "      httpMethod: post\n" +
+                "      urls: http://localhost:4440/project \n" +
+                "      plugin:\n" +
+                "        type: my-plugin\n" +
+                "        configuration:\n" +
+                "          somekey: somevalue\n" +
+                "    onavgduration:\n" +
+                "      email:\n" +
+                "        recipients: test@example.com\n" +
+                "        subject: Job Exceeded average duration\n" +
+                "      plugin:\n" +
+                "        type: my-plugin\n" +
+                "        configuration:\n" +
+                "          somekey: somevalue\n" +
+                "    onretryablefailure:\n" +
+                "      plugin:\n" +
+                "        type: my-plugin\n" +
+                "        configuration:\n" +
+                "          somekey: somevalue\n" +
+                "  notifyAvgDurationThreshold: '+30'\n" +
+                "  plugins:\n" +
+                "    ExecutionLifecycle: null\n" +
+                "  scheduleEnabled: true\n" +
+                "  schedules: []\n" +
+                "  sequence:\n" +
+                "    commands:\n" +
+                "      - exec: asd\n" +
+                "    keepgoing: false\n" +
+                "    strategy: node-first"
+        def sut = new JobYAMLFormat()
+        when:
+        def result = sut.decode(new StringReader(input))
+        then:
+        result[0].notification['onstart'].size() == 1
+        result[0].notification['onstart'].findAll{ it['email'] != null }.size() == 1
+
+        result[0].notification['onfailure'].size() == 1
+        result[0].notification['onfailure'].findAll{ it['email'] != null }.size() == 1
+
+        result[0].notification['onsuccess'].size() == 1
+        result[0].notification['onsuccess'].findAll{ it['urls'] != null }.size() == 1
+        result[0].notification['onsuccess'].findAll{ it['plugin'] != null }.size() == 1
+
+        result[0].notification['onavgduration'].size() == 1
+        result[0].notification['onavgduration'].findAll{ it['email'] != null }.size() == 1
+        result[0].notification['onavgduration'].findAll{ it['plugin'] != null }.size() == 1
+
+        result[0].notification['onretryablefailure'].size() == 1
+        result[0].notification['onretryablefailure'].findAll{ it['plugin'] != null }.size() == 1
+    }
+
+    @Unroll
     def "should return an yaml str with list of objects in notification trigger"() {
         given:
         List<Map> input = [[
