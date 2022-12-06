@@ -16,8 +16,8 @@
 
 package rundeck
 
+import rundeck.data.validation.validators.AnyDomainEmailValidator
 
-import rundeck.services.AnyDomainEmailValidator
 
 class User {
     String login

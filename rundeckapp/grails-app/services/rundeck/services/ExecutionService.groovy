@@ -150,7 +150,7 @@ class ExecutionService implements ApplicationContextAware, StepExecutor, NodeSte
     def pluginService
     def executorService
     JobLifecycleComponentService jobLifecycleComponentService
-    def executionLifecyclePluginService
+    ExecutionLifecyclePluginService executionLifecyclePluginService
     AuditEventsService auditEventsService
 
     static final ThreadLocal<DateFormat> ISO_8601_DATE_FORMAT_WITH_MS_XXX =
