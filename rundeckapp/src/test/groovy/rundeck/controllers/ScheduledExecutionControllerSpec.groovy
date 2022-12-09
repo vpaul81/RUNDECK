@@ -768,7 +768,7 @@ class ScheduledExecutionControllerSpec extends RundeckHibernateSpec implements C
         }
 
             controller.rundeckAuthContextProcessor = Mock(AppAuthContextProcessor){
-                _*authorizeProjectJobAny(_,_,['read'],_)>>true
+                _*authorizeProjectJobAny(_,_,[AuthConstants.ACTION_READ],_)>>true
                 _*filterAuthorizedNodes(_,_,_,_)>>{args-> args[2]}
             }
 
@@ -795,7 +795,7 @@ class ScheduledExecutionControllerSpec extends RundeckHibernateSpec implements C
         response.header('Content-Disposition') == "attachment; filename=\"test1.$format\""
         response.text=="format: $format"
         where:
-        format << ['xml', 'yaml']
+        format << ['xml', 'yaml', 'json']
 
     }
 
